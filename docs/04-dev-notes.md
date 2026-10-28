@@ -1,5 +1,43 @@
 # Dev notes — Fandom Pomodoro Sanctuary
 
+## Addendum — Photorealistic backgrounds (34 locations)
+Replaced the illustrated SVG background with a real, freely-licensed photograph
+(Pexels, no attribution required) for 34 locations: all 8 Camp Half-Blood grounds,
+5 special locations, 11 quiz-outcome cabin *interiors* (Poseidon, Athena, Apollo,
+Ares, Aphrodite, Hermes, Hephaestus, Demeter, Zeus, Hades, Hecate), and all 10
+Hogwarts locations (4 common-room interiors + Great Hall, Library, Astronomy
+Tower, Room of Requirement, Greenhouse, Black Lake Shore).
+
+No image-generation tool was available in-session (checked `ToolSearch`,
+`SearchPlugins`, and the connector list) and plain SVG has a hard realism
+ceiling, so this was done by hand-curating real stock photos instead:
+`components/Scenes/PhotoScene.tsx` renders a full-bleed `<img>` with an optional
+thin SVG overlay (a god/house glyph, stars, candles — reusing the existing
+`primitives.tsx` kit) for the magical touches a photo alone can't give.
+`data/locationPhotos.ts` maps `sceneId → { src, objectPosition, credit }`;
+`SceneRegistry.tsx` checks that manifest first and falls back to the original
+illustrated scene for anything not in it. **Hera, Artemis, and Dionysus cabins
+were deliberately left out of this pass** (the quiz can never assign them) and
+still render their original SVG exterior — this is intentional scope, not a bug.
+
+Images live at `app/public/images/{pj,hp}/<sceneId>.jpg` (~12MB total, 34 files,
+already compressed via Pexels' own `?auto=compress&cs=tinysrgb&w=1600`), gated
+behind the existing `LazyScene` IntersectionObserver wrapper so the 27-card grid
+doesn't load every photo at once. A shared `.scene-grade` colour-wash layer
+(`mix-blend-mode: soft-light`, tinted by the current theme's `--accent-primary`)
+sits over every scene — illustrated or photographic — so 34 photos pulled from
+different photographers/lighting still read as one cohesive, cinematically
+graded world rather than a stock-photo grab-bag.
+
+Sourcing itself (search Pexels → pick a real, well-composed, non-staged match →
+grab the photo ID from its detail-page URL → `curl` the direct
+`images.pexels.com/photos/<id>/pexels-photo-<id>.jpeg?...&w=1600` URL) was
+delegated to four parallel background agents, one per location group, each
+reporting back a filename→photographer→source-URL table used to build the
+credits manifest — keeps ~30 individual photo searches out of the main
+session's context while still being verifiable (every credit links back to the
+exact source photo).
+
 ## Addendum — Camp Half-Blood expansion (27 PJ locations + art upgrade)
 Extended the original 2-location Camp Half-Blood picker into three categories:
 **grounds** (8: Main Camp, Strawberry Fields, Campfire Circle, Canoe Lake,

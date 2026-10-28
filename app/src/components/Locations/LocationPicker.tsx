@@ -25,8 +25,8 @@ function LocationCard({ loc, locked, active, mine, onSelect, onTakeQuiz, placeho
         <h3>{loc.name}</h3>
         <p>{loc.tagline}</p>
       </div>
-      {active && <span className="location-card-badge">Current</span>}
-      {!active && mine && <span className="location-card-badge location-card-badge-mine">Yours</span>}
+      {active && <span className="location-card-dot" title="Current location" />}
+      {!active && mine && <span className="location-card-badge">Yours</span>}
     </button>
   );
 }

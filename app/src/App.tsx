@@ -98,6 +98,7 @@ function AppShellContent() {
     >
       <div className="scene-layer">
         <SceneForId key={sceneId} sceneId={sceneId} />
+        <div className="scene-grade" />
         <div className="scene-overlay" />
       </div>
 
