@@ -1,5 +1,27 @@
 # Dev notes — Fandom Pomodoro Sanctuary
 
+## Addendum — Camp Half-Blood expansion (27 PJ locations + art upgrade)
+Extended the original 2-location Camp Half-Blood picker into three categories:
+**grounds** (8: Main Camp, Strawberry Fields, Campfire Circle, Canoe Lake,
+Climbing Wall, Archery Range, Arena, Dining Pavilion), **cabins** (14, one per
+canonical cabin number 1–13 + 20, including Hera/Artemis/Dionysus, who the
+quiz can never assign but who canonically have cabins), and **special**
+locations (5: Big House, Pine Tree Hill, Forest, Beach, Clifftop Overlook).
+Cabins are intentionally **never gated** by the quiz result (`LocationInfo.requires`
+only applies to Hogwarts common rooms now) — the quiz personalises (a "Yours"
+badge, UI accent colors) but never restricts, per explicit product requirement.
+`CabinOccupantId` (`types.ts`) is a GodId superset for this; `data/cabinResidents.ts`
+holds the 3 non-quiz deities and the canonical cabin-number order.
+
+Shared scene primitives (`components/Scenes/primitives.tsx`) were upgraded with
+gradient-shaded trees/hills, clouds, cast shadows, and several new building
+blocks (columns, campfire, dock/canoe, lava wall, archery target, weapon rack,
+sand ground, gable building, cliff edge, beach shore, dense canopy) — every
+Hogwarts scene got a visual-parity pass using the same upgraded primitives.
+Location-picker cards now mount their scene lazily (`components/Scenes/LazyScene.tsx`,
+IntersectionObserver-gated) so a 27-card grid doesn't render every background
+at once.
+
 ## Stack
 Vite + React 19 + TypeScript, zero backend, zero UI framework dependency (hand-written
 CSS with custom properties for theming). All state is client-side, persisted to

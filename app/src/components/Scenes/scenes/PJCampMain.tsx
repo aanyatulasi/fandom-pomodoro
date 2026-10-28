@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { SceneFrame } from '../SceneFrame';
-import { Pines, Hills, Water, Celestial, VB_W } from '../primitives';
+import { Pines, Hills, Water, Celestial, Clouds, CastShadow, shade, VB_W } from '../primitives';
 
 function CabinRow() {
   const cabins = useMemo(() => {
@@ -14,8 +14,11 @@ function CabinRow() {
     <g>
       {cabins.map((c) => (
         <g key={c.key}>
+          <CastShadow x={c.x + c.w / 2} y={66.6} rx={c.w * 0.7} ry={1.4} opacity={0.22} />
           <rect x={c.x} y={66 - c.h} width={c.w} height={c.h} fill={c.wall} />
+          <rect x={c.x} y={66 - c.h} width={c.w} height={1.6} fill={shade(c.wall, 0.15)} opacity={0.5} />
           <polygon points={`${c.x - 1.5},${66 - c.h} ${c.x + c.w / 2},${66 - c.h - 6} ${c.x + c.w + 1.5},${66 - c.h}`} fill={c.roof} />
+          <polygon points={`${c.x + c.w / 2},${66 - c.h - 6} ${c.x + c.w + 1.5},${66 - c.h} ${c.x + c.w - 1},${66 - c.h}`} fill={shade(c.roof, -0.15)} opacity={0.6} />
           <rect x={c.x + c.w / 2 - 1.3} y={66 - 4.5} width={2.6} height={4.5} fill="#2a1a10" />
           <rect x={c.x + 1.5} y={66 - c.h + 1.5} width={2.2} height={2.2} fill="#ffe3a0" opacity={0.85} />
         </g>
@@ -43,6 +46,7 @@ export function PJCampMain() {
   return (
     <SceneFrame skyId="pj-camp-sky" sky={{ top: '#5aa7c9', mid: '#a8d4b0', bottom: '#e9c98a' }}>
       <Celestial x={128} y={16} r={6} color="#fff3c4" glow="#ffe9a8" />
+      <Clouds seed={5} opacity={0.5} />
       <Water y={30} colorTop="#aee4f2" colorBottom="#6fb8cf" id="pj-camp-sound" />
       <Hills baseY={46} amplitude={10} color="#355c3a" />
       <Pines xStart={0} xEnd={VB_W} baseY={46} count={16} height={13} color="#2c4a30" seed={7} />

@@ -4,10 +4,16 @@ export type GodId =
   | 'poseidon' | 'athena' | 'apollo' | 'ares' | 'aphrodite' | 'hermes'
   | 'hephaestus' | 'demeter' | 'zeus' | 'hades' | 'hecate';
 
+/** Every deity with a cabin at camp, including ones the quiz can never
+ * assign (Hera and Artemis have no demigod children; Dionysus is camp
+ * director — Pollux is his one camper). Cabins are open to explore
+ * regardless of the user's own quiz result. */
+export type CabinOccupantId = GodId | 'hera' | 'artemis' | 'dionysus';
+
 export type HouseId = 'gryffindor' | 'slytherin' | 'ravenclaw' | 'hufflepuff';
 
 export interface GodInfo {
-  id: GodId;
+  id: CabinOccupantId;
   name: string;
   title: string;
   cabin: number;
@@ -16,6 +22,8 @@ export interface GodInfo {
   description: string;
   traits: string[];
   palette: { primary: string; secondary: string; accent: string; glow: string };
+  /** true for cabins the quiz can never assign as "your godly parent" (Hera, Artemis). */
+  unclaimable?: boolean;
 }
 
 export interface HouseInfo {
@@ -29,9 +37,17 @@ export interface HouseInfo {
   palette: { primary: string; secondary: string; accent: string; glow: string };
 }
 
+export type PJGroundsLocationId =
+  | 'camp-main' | 'strawberry-fields' | 'campfire-circle' | 'canoe-lake'
+  | 'climbing-wall' | 'archery-range' | 'arena' | 'dining-pavilion';
+
+export type PJSpecialLocationId =
+  | 'big-house' | 'pine-tree-hill' | 'forest' | 'beach' | 'clifftop-overlook';
+
 export type PJLocationId =
-  | 'camp-main'
-  | `cabin-${GodId}`;
+  | PJGroundsLocationId
+  | `cabin-${CabinOccupantId}`
+  | PJSpecialLocationId;
 
 export type HPLocationId =
   | `common-${HouseId}`
@@ -39,6 +55,8 @@ export type HPLocationId =
   | 'greenhouse' | 'black-lake';
 
 export type LocationId = PJLocationId | HPLocationId;
+
+export type LocationCategory = 'grounds' | 'cabins' | 'special' | 'personal' | 'explore';
 
 export interface LocationInfo {
   id: LocationId;
@@ -48,8 +66,11 @@ export interface LocationInfo {
   description: string;
   sceneId: string;
   ambientId: AmbientId | null;
-  requires?: { god?: GodId } | { house?: HouseId };
-  group: 'home' | 'personal' | 'explore';
+  /** Only used by Hogwarts common rooms, which stay locked until sorted.
+   * Camp Half-Blood cabins are never gated — the quiz personalises, it
+   * doesn't restrict. */
+  requires?: { house?: HouseId };
+  group: LocationCategory;
 }
 
 export type AmbientId =

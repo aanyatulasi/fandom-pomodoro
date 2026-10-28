@@ -1,11 +1,13 @@
 import { SceneFrame } from '../SceneFrame';
-import { Stars, Celestial, Mist, VB_W } from '../primitives';
+import { Stars, Celestial, Mist, Hills, CastShadow, VB_W } from '../primitives';
 
 export function HPCastleExterior() {
   return (
     <SceneFrame skyId="hp-landing-sky" sky={{ top: '#0d1230', mid: '#28214a', bottom: '#4a3a5c' }}>
       <Stars count={70} seed={3} yMax={45} />
       <Celestial x={120} y={16} r={7} color="#eef0ff" glow="#aeb8ff" />
+      <Hills baseY={80} amplitude={5} color="#1a1530" opacity={0.7} rim={false} />
+      <CastShadow x={90} y={78} rx={70} ry={6} opacity={0.3} />
       <g fill="#120f1e">
         <rect x={30} y={30} width={16} height={46} />
         <polygon points="30,30 38,16 46,30" />
@@ -15,6 +17,10 @@ export function HPCastleExterior() {
         <rect x={100} y={42} width={30} height={34} />
         <rect x={134} y={34} width={16} height={42} />
         <polygon points="134,34 142,20 150,34" />
+      </g>
+      <g fill="#1a1530" opacity={0.6}>
+        <rect x={54} y={40} width={22} height={4} />
+        <rect x={100} y={42} width={30} height={4} />
       </g>
       <g fill="#ffdd7a" opacity={0.75}>
         {[36, 60, 68, 88, 108, 118, 140].map((x, i) => (

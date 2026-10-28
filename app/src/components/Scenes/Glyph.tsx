@@ -1,7 +1,8 @@
 
 export type GlyphName =
   | 'trident' | 'owl' | 'lyre' | 'spear' | 'dove' | 'caduceus' | 'hammer'
-  | 'wheat' | 'bolt' | 'helm' | 'torches' | 'lion' | 'serpent' | 'eagle' | 'badger';
+  | 'wheat' | 'bolt' | 'helm' | 'torches' | 'lion' | 'serpent' | 'eagle' | 'badger'
+  | 'peacock' | 'bow' | 'grapes';
 
 interface GlyphProps {
   name: GlyphName;
@@ -125,6 +126,35 @@ export function Glyph({ name, x, y, size = 10, color, opacity = 0.9, className }
         <g className={className}>
           <ellipse cx={x} cy={y} rx={5 * s} ry={3.2 * s} fill={color} opacity={opacity} />
           <path d={`M ${t(-1, -3)} L ${t(-1, 3)}`} stroke="var(--scene-sky-bottom, #000)" strokeWidth={1 * s} opacity={0.5} />
+        </g>
+      );
+    case 'peacock':
+      return (
+        <g className={className}>
+          <circle cx={x} cy={y + 2} r={1.6 * s} fill={color} opacity={opacity} />
+          {[-3, -1.6, 0, 1.6, 3].map((dx, i) => (
+            <g key={dx}>
+              <path d={`M ${t(0, 2)} Q ${t(dx, -3)} ${t(dx, -6)}`} {...common} strokeWidth={0.35 * s} />
+              <circle cx={x + dx * s} cy={y + (-6 + i % 2) * s} r={0.8 * s} fill={color} opacity={opacity * 0.8} />
+            </g>
+          ))}
+        </g>
+      );
+    case 'bow':
+      return (
+        <g className={className}>
+          <path d={`M ${t(-1, -6)} Q ${t(3, 0)} ${t(-1, 6)}`} {...common} strokeWidth={0.5 * s} />
+          <path d={`M ${t(-1, -6)} L ${t(-1, 6)}`} {...common} strokeWidth={0.25 * s} opacity={opacity * 0.7} />
+          <path d={`M ${t(-1, 0)} L ${t(5, 0)}`} {...common} strokeWidth={0.3 * s} />
+        </g>
+      );
+    case 'grapes':
+      return (
+        <g className={className} fill={color} opacity={opacity}>
+          {[[-2, -2], [0, -2], [2, -2], [-3, 0], [-1, 0], [1, 0], [3, 0], [-2, 2], [0, 2], [2, 2]].map(([dx, dy], i) => (
+            <circle key={i} cx={x + dx * s} cy={y + dy * s} r={1.1 * s} />
+          ))}
+          <path d={`M ${t(0, -5)} L ${t(0, -2)}`} {...common} strokeWidth={0.35 * s} />
         </g>
       );
     default:

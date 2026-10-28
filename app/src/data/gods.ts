@@ -82,7 +82,7 @@ export const GODS: Record<GodId, GodInfo> = {
     palette: { primary: '#1a1a24', secondary: '#3d2a52', accent: '#7a5fa3', glow: '#c9b8e8' },
   },
   hecate: {
-    id: 'hecate', name: 'Hecate', title: 'Goddess of Magic', cabin: 15,
+    id: 'hecate', name: 'Hecate', title: 'Goddess of Magic', cabin: 20,
     domain: 'Magic, crossroads, night',
     symbol: 'twin torches',
     description: 'You see the option nobody else noticed. Comfortable in gray areas and in the dark, you solve problems sideways instead of head-on.',

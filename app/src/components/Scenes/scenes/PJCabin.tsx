@@ -1,19 +1,29 @@
-import type { GodId } from '../../../types';
-import { GODS } from '../../../data/gods';
+import type { CabinOccupantId } from '../../../types';
+import { CABIN_RESIDENTS } from '../../../data/cabinResidents';
 import { SceneFrame } from '../SceneFrame';
-import { Pines, Hills, Water, Mist, Celestial, Stars, VB_W } from '../primitives';
-import { Glyph } from '../Glyph';
+import { Pines, Hills, Water, Mist, Celestial, Stars, Clouds, CastShadow, shade, VB_W } from '../primitives';
+import { Glyph, type GlyphName } from '../Glyph';
 import { GOD_GLYPH } from '../../../data/glyphs';
 
 function CabinBody({ roof, wall, door, glow }: { roof: string; wall: string; door: string; glow: string }) {
   const cx = VB_W / 2;
+  const roofDark = shade(roof, -0.25);
+  const wallDark = shade(wall, -0.18);
   return (
     <g>
-      <rect x={cx - 30} y={42} width={60} height={26} fill={wall} />
+      <CastShadow x={cx} y={69} rx={34} ry={3} opacity={0.3} />
+      <rect x={cx - 31} y={66} width={62} height={3} fill={wallDark} />
+      <rect x={cx - 30} y={42} width={60} height={25} fill={wall} />
+      <rect x={cx - 30} y={42} width={60} height={6} fill={shade(wall, 0.12)} opacity={0.5} />
+      <polygon points={`${cx - 36},42 ${cx},20 ${cx + 36},42`} fill={roofDark} />
       <polygon points={`${cx - 34},42 ${cx},22 ${cx + 34},42`} fill={roof} />
-      <rect x={cx - 22} y={48} width={9} height={9} fill={glow} opacity={0.75} />
-      <rect x={cx + 13} y={48} width={9} height={9} fill={glow} opacity={0.75} />
-      <rect x={cx - 5} y={54} width={10} height={14} fill={door} />
+      <polygon points={`${cx},22 ${cx + 34},42 ${cx + 30},42`} fill={shade(roof, -0.12)} opacity={0.6} />
+      <rect x={cx - 22} y={48} width={9} height={9} fill={glow} opacity={0.8} />
+      <rect x={cx - 22} y={48} width={9} height={9} fill="none" stroke={wallDark} strokeWidth={0.5} />
+      <rect x={cx + 13} y={48} width={9} height={9} fill={glow} opacity={0.8} />
+      <rect x={cx + 13} y={48} width={9} height={9} fill="none" stroke={wallDark} strokeWidth={0.5} />
+      <rect x={cx - 5} y={53} width={10} height={14} fill={door} />
+      <circle cx={cx + 3} cy={60} r={0.5} fill={glow} opacity={0.8} />
       <rect x={cx - 32} y={66} width={64} height={3} fill={door} opacity={0.6} />
       {Array.from({ length: 7 }).map((_, i) => (
         <rect key={i} x={cx - 30 + i * 9} y={66} width={1.4} height={10} fill={door} opacity={0.5} />
@@ -22,7 +32,7 @@ function CabinBody({ roof, wall, door, glow }: { roof: string; wall: string; doo
   );
 }
 
-function Extras({ god, accent }: { god: GodId; accent: string }) {
+function Extras({ god, accent }: { god: CabinOccupantId; accent: string }) {
   const cx = VB_W / 2;
   switch (god) {
     case 'poseidon':
@@ -30,13 +40,16 @@ function Extras({ god, accent }: { god: GodId; accent: string }) {
         <g>
           <Water y={74} colorTop="#2f8fa3" colorBottom="#0d4f6b" id="pj-cabin-water" />
           {[20, 40, 60, 80, 100, 120, 140].map((x) => <circle key={x} cx={x} cy={80 + (x % 7)} r={0.8} fill="#e8f7fa" opacity={0.6} />)}
+          <path d="M 50 78 Q 54 75 58 78 Q 62 81 66 78" stroke="#dff" strokeWidth={0.5} fill="none" opacity={0.5} />
         </g>
       );
     case 'athena':
       return (
         <g fill="#e9ddb3">
-          {[cx - 44, cx - 38, cx + 38, cx + 44].map((x) => <rect key={x} x={x} y={44} width={3} height={24} />)}
+          {[cx - 44, cx - 38, cx + 38, cx + 44].map((x) => <rect key={x} x={x} y={40} width={3.4} height={27} />)}
+          {[cx - 44, cx - 38, cx + 38, cx + 44].map((x) => <rect key={`c${x}`} x={x - 0.6} y={39} width={4.6} height={1.4} />)}
           <path d={`M ${cx - 46} 68 Q ${cx} 72 ${cx + 46} 68`} stroke="#e9ddb3" strokeWidth={0.6} fill="none" />
+          <rect x={cx - 48} y={75} width={12} height={8} rx={1} fill="#c9a84c" opacity={0.5} transform={`rotate(-8 ${cx - 42} 79)`} />
         </g>
       );
     case 'apollo':
@@ -115,22 +128,46 @@ function Extras({ god, accent }: { god: GodId; accent: string }) {
           <circle cx={135} cy={12} r={5} fill="#2a1b3d" />
         </g>
       );
+    case 'hera':
+      return (
+        <g>
+          <Glyph name="peacock" x={cx - 40} y={72} size={10} color="#e8d9ff" />
+          <Glyph name="peacock" x={cx + 40} y={72} size={10} color="#e8d9ff" />
+          <rect x={cx - 1} y={44} width={2} height={22} fill="#e8d9ff" opacity={0.5} />
+        </g>
+      );
+    case 'artemis':
+      return (
+        <g>
+          <circle cx={30} cy={14} r={6} fill="#eef6ff" opacity={0.9} />
+          <circle cx={27} cy={12} r={6} fill={shade('#1a2438', 0)} opacity={0.85} />
+          <Glyph name="bow" x={cx + 42} y={74} size={11} color="#d8e6f5" />
+        </g>
+      );
+    case 'dionysus':
+      return (
+        <g>
+          <path d={`M ${cx - 36} 44 Q ${cx - 20} 34 ${cx} 44 Q ${cx + 20} 34 ${cx + 36} 44`} stroke="#5a2e4a" strokeWidth={1.4} fill="none" />
+          <Glyph name="grapes" x={cx - 30} y={38} size={7} color="#c98ed6" />
+          <Glyph name="grapes" x={cx + 30} y={38} size={7} color="#c98ed6" />
+        </g>
+      );
     default:
       return null;
   }
 }
 
-export function PJCabin({ god }: { god: GodId }) {
-  const info = GODS[god];
-  const night = god === 'hades' || god === 'hecate' || god === 'zeus';
+export function PJCabin({ god }: { god: CabinOccupantId }) {
+  const info = CABIN_RESIDENTS[god];
+  const night = god === 'hades' || god === 'hecate' || god === 'zeus' || god === 'artemis' || god === 'dionysus';
   return (
     <SceneFrame skyId={`pj-cabin-sky-${god}`} sky={{ top: info.palette.primary, mid: info.palette.secondary, bottom: info.palette.glow }}>
-      {night && <Stars count={40} seed={god.length} />}
+      {night ? <Stars count={40} seed={god.length} /> : <Clouds seed={god.length + 2} color={info.palette.glow} opacity={0.35} />}
       <Celestial x={128} y={16} r={night ? 4 : 6} color={night ? '#e9e9ff' : '#fff3c4'} glow={info.palette.glow} />
       <Hills baseY={48} amplitude={8} color={info.palette.secondary} opacity={0.6} />
       <Pines xStart={0} xEnd={VB_W} baseY={48} count={10} height={10} color={info.palette.primary} seed={11} />
       <CabinBody roof={info.palette.secondary} wall={info.palette.primary} door="#2a1a10" glow={info.palette.accent} />
-      <Glyph name={GOD_GLYPH[god]} x={VB_W / 2} y={18} size={11} color={info.palette.accent} />
+      <Glyph name={GOD_GLYPH[god] as GlyphName} x={VB_W / 2} y={18} size={11} color={info.palette.accent} />
       <Extras god={god} accent={info.palette.accent} />
     </SceneFrame>
   );
